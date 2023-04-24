@@ -12,8 +12,8 @@ import gradio as gr
 from modules import sd_samplers
 from modules.processing import Processed, process_images
 from PIL import Image
-from modules.shared import opts, cmd_opts, state, list_checkpoint_tiles
-from modules.sd_models import load_model
+from modules.shared import opts, cmd_opts, state, list_checkpoint_tiles, sd_model
+from modules.sd_models import load_model, reload_model_weights, get_closet_checkpoint_match
 
 
 def process_string_tag(tag):
@@ -129,7 +129,7 @@ class Script(scripts.Script):
 
     def run(self, p, checkbox_iterate, checkbox_iterate_batch, prompt_txt: str):
         # 获取模型列表
-        list_models = list_checkpoint_tiles()
+        # list_models = list_checkpoint_tiles()
         
         lines = [x.strip() for x in prompt_txt.splitlines()]
         lines = [x for x in lines if len(x) > 0]
@@ -170,21 +170,28 @@ class Script(scripts.Script):
             if args.get("sd_model", None):
                 try:
                     change_to_ckpt = args.get("sd_model")
-                    del args["sd_model"]
-                    for lct in list_models:
-                        if change_to_ckpt in lct:
-                            change_to_ckpt = lct
-                            break
-                    if change_to_ckpt != opts.sd_model_checkpoint:
-                        opts.sd_model_checkpoint = change_to_ckpt
-                        print(f"Change checkpoint to {change_to_ckpt}")
-                        load_model()
+                    # for lct in list_models:
+                    #     if change_to_ckpt in lct:
+                    #         change_to_ckpt = lct
+                    #         break
+                    change_to_ckpt = get_closet_checkpoint_match(change_to_ckpt)
+                    if change_to_ckpt:
+                        change_to_ckpt = change_to_ckpt.title
+                        if change_to_ckpt != opts.sd_model_checkpoint:
+                            opts.sd_model_checkpoint = change_to_ckpt
+                            print(f"Change checkpoint to {change_to_ckpt}")
+                            # print(sd_model)
+                            # load_model()
+                            reload_model_weights()
+                        else:
+                            print(f"Same checkpoint {change_to_ckpt}, don't need to change")
                     else:
-                        print(f"Same checkpoint {change_to_ckpt}, don't need to change")
+                        print(f"No such {args.get('sd_model')}")
                 except Exception as e:
                     print(e)
                     print(f"change to {change_to_ckpt} failed!")
                     continue
+                del args["sd_model"]
 
             copy_p = copy.copy(p)
             for k, v in args.items():
