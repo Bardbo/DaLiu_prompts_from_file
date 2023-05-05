@@ -1,3 +1,5 @@
+# DaLiu_prompts_from_file.py
+
 本文件是sd-web-ui的一个脚本文件。
 
 具体的是基于官方自带的prompts_from_file.py文件修改而来。
@@ -9,3 +11,6 @@
 目前由于代码水平有限，不知道如何将模型变换改为ui界面手动变换的形式。
 
 大佬如果知道的话，可以指点一下我，其实是个很简单的功能哈哈，我自己再看看gr的使用和源码吧
+
+# get_prompts_list.py
+补充添加的生成不同模型多行prompts的脚本代码，不用放到scripts文件夹
