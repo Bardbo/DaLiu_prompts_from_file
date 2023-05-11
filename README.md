@@ -14,3 +14,6 @@
 
 # get_prompts_list.py
 补充添加的生成不同模型多行prompts的脚本代码，不用放到scripts文件夹
+
+# random_prompts
+补充添加的随机组合描述词生成多行prompts的脚本代码，不用放到scripts文件夹
