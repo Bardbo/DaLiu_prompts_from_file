@@ -10,11 +10,13 @@ stable_params_table = pd.read_excel("stable_parms.xlsx")
 stable_params_table = stable_params_table.dropna(axis=1, how='all')
 # 注意此处会把浮点数转成整数
 numeric_cols = stable_params_table.select_dtypes(include=['float']).columns
-stable_params_table[numeric_cols] = stable_params_table[numeric_cols].astype('Int64')
+if len(numeric_cols):
+    print("浮点数列", numeric_cols)
+    stable_params_table[numeric_cols] = stable_params_table[numeric_cols].astype('Int64')
 stable_params_table = {k:stable_params_table[k].dropna().tolist() for k in stable_params_table.columns}
 
 def generate(n):
-    with open("prompts_list.txt", "w") as f1, open("tags.txt", "w") as f2:
+    with open("prompts_list.txt", "w", encoding="utf-8") as f1, open("tags.txt", "w", encoding="utf-8") as f2:
         f1_ls, f2_ls, sd_model_ls = [], [], []
         for i in range(n):
             # prompt
